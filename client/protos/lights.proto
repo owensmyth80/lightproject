@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package lights;
+
+service LightReg {
+    rpc RegStreetLight(StreetLightInfo) returns (LightRegResponse) {}
+
+}
+
+message StreetLightInfo {
+    string streetLightId = 1;
+    string streetLightName = 2;
+    double streetLightLat = 3;
+    double streetLightLong = 4;
+}
+
+message LightRegResponse {
+    bool streetLightRegStatus = 1;
+    string message = 2;
+
+
+}
