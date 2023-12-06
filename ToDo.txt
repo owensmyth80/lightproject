@@ -1,0 +1,21 @@
+create unary to register devices
+populate with 3 examples manually
+should i consider mapping them to zones? then the other sensors map to zones?
+consider doing this via user input
+
+
+client side streaming
+create a sensor taht provides telemetry temp/lux , perhaps 1 per light...
+
+bi-directionaly
+used to manage light based on telemetry and update status
+as in, the light can turn on and off from either client or server side 
+
+server side
+this will be a broadcast of the status of the lights
+
+
+the web-client gui 
+should contain the 4 zones, 4 lights and 4 senors with the abillity to turn them on and off but also update of the sensors change by automation logic based on sensors
+
+

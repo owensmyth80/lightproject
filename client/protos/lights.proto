@@ -7,16 +7,32 @@ service LightReg {
 
 }
 
+service Telemetry{
+    rpc StreamTelemetry(stream TelemetryInfo) returns (TelemetryConf) {}
+
+}
+
 message StreetLightInfo {
     string streetLightId = 1;
     string streetLightName = 2;
-    double streetLightLat = 3;
-    double streetLightLong = 4;
+    int32 streetLightZone = 3;
+    double streetLightLat = 4;
+    double streetLightLong = 5;
+
 }
 
 message LightRegResponse {
     bool streetLightRegStatus = 1;
     string message = 2;
+}
 
+message TelemetryInfo{
+    string sensorId = 1;
+    int32 sensorZone = 2;
+    double luxReading = 3;
+
+}
+message TelemetryConf{
+    string telemetryInfo = 1;
 
 }
