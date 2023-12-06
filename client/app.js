@@ -20,19 +20,19 @@ function handleResponse(error, response) {
   }
 
 var telemetryClient = new lights.Telemetry("0.0.0.0:40000", grpc.credentials.createInsecure());
-var telemetryClient = telemetryClient.StreamTelemetry(function(error, response) {
+var telemetryStream = telemetryClient.StreamTelemetry(function(error, response) {
     if (error) {
       console.error('Error Telementry Service :', error);
     } else {
-      console.log("we are here "+response.telemetryInfo+ "consoling out");
+      console.log(response.message);
     }
   });
 
-  telemetryClient.write({ sensorId: "LIGHTSENSE0001", sensorZone: "1", luxReading: 50.0 });
-  telemetryClient.write({ sensorId: "LIGHTSENSE0002", sensorZone: "2", luxReading: 55.0 });
-  telemetryClient.write({ sensorId: "LIGHTSENSE0003", sensorZone: "3", luxReading: 59.0 });
+  telemetryStream.write({ sensorId: "LIGHTSENSE0001", sensorZone: "1", luxReading: 50.0 });
+  telemetryStream.write({ sensorId: "LIGHTSENSE0002", sensorZone: "2", luxReading: 55.0 });
+  telemetryStream.write({ sensorId: "LIGHTSENSE0003", sensorZone: "3", luxReading: 59.0 });
 
-  telemetryClient.end();
+  telemetryStream.end();
 
 
 

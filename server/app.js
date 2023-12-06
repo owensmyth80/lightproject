@@ -25,13 +25,21 @@ server.addService(proto.LightReg.service, {
   
 });
 
-  //checking the var light stays after the service is called
+  //checking the var light 
   if(Object.keys(lights).length > 0){
-    console.lgog("the lights in the var lights are ", lights);
+    console.log("the lights in the var lights are ", lights);
   }
   else{
     console.log("nothing in the var lights");
     
+  }
+    //checking the var telemetryData 
+  if(Object.keys(telemetryData).length > 0){
+    console.log("the received telemetry is  ", telemetryData);
+  }
+  else{
+    console.log("nothing in the var telmetryData ");
+      
   }
 
   server.addService(proto.Telemetry.service,  {
