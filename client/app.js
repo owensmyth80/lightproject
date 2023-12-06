@@ -5,11 +5,11 @@ var PROTO_PATH = __dirname + "/protos/lights.proto"
 
 var packageDefinition = protoLoader.loadSync(PROTO_PATH)
 var lights = grpc.loadPackageDefinition(packageDefinition).lights;
-var client = new lights.LightReg("0.0.0.0:40000", grpc.credentials.createInsecure());
+var lightRegClient = new lights.LightReg("0.0.0.0:40000", grpc.credentials.createInsecure());
 //fix ID to id
-client.RegStreetLight({ streetLightId: "LIGHT0001", streetLightName: "Park Light 1", streetLightZone: 1, streetLightLat: 53.34889, streetLightLong: -6.31336 }, handleResponse);
-client.RegStreetLight({ streetLightId: "LIGHT0002", streetLightName: "Park Light 2", streetLightZone: 2, streetLightLat: 53.35027, streetLightLong: -6.31530 }, handleResponse);
-client.RegStreetLight({ streetLightId: "LIGHT0003", streetLightName: "Park Light 3", streetLightZone: 3, streetLightLat: 53.35233, streetLightLong: -6.32303 }, handleResponse);
+lightRegClient.RegStreetLight({ streetLightId: "LIGHT0001", streetLightName: "Park Light 1", streetLightZone: 1, streetLightLat: 53.34889, streetLightLong: -6.31336 }, handleResponse);
+lightRegClient.RegStreetLight({ streetLightId: "LIGHT0002", streetLightName: "Park Light 2", streetLightZone: 2, streetLightLat: 53.35027, streetLightLong: -6.31530 }, handleResponse);
+lightRegClient.RegStreetLight({ streetLightId: "LIGHT0003", streetLightName: "Park Light 3", streetLightZone: 3, streetLightLat: 53.35233, streetLightLong: -6.32303 }, handleResponse);
 
 function handleResponse(error, response) {
     if (error) {
@@ -18,3 +18,25 @@ function handleResponse(error, response) {
       console.log(response.message);
     }
   }
+
+var telemetryClient = new lights.Telemetry("0.0.0.0:40000", grpc.credentials.createInsecure());
+var telemetryClient = telemetryClient.StreamTelemetry(function(error, response) {
+    if (error) {
+      console.error('Error Telementry Service :', error);
+    } else {
+      console.log("we are here "+response.telemetryInfo+ "consoling out");
+    }
+  });
+
+  telemetryClient.write({ sensorId: "LIGHTSENSE0001", sensorZone: "1", luxReading: 50.0 });
+  telemetryClient.write({ sensorId: "LIGHTSENSE0002", sensorZone: "2", luxReading: 55.0 });
+  telemetryClient.write({ sensorId: "LIGHTSENSE0003", sensorZone: "3", luxReading: 59.0 });
+
+  telemetryClient.end();
+
+
+
+
+  
+
+

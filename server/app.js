@@ -7,6 +7,7 @@ var packageDefinition = protoLoader.loadSync(
 var proto = grpc.loadPackageDefinition(packageDefinition).lights
 //not sure if this should be a var or a const.,  might rename it lightsArray
 var lights = {};
+var telemetryData = {};
 var server = new grpc.Server()
 
 server.addService(proto.LightReg.service, {
@@ -21,8 +22,7 @@ server.addService(proto.LightReg.service, {
     //console log all details to confirm they exist
     console.log("The lights are ", lights);
   },
-
-
+  
 });
 
   //checking the var light stays after the service is called
@@ -34,6 +34,27 @@ server.addService(proto.LightReg.service, {
     
   }
 
+  server.addService(proto.Telemetry.service,  {
+    StreamTelemetry: (call) => {
+      call.on("data", (telemetryInfo) => {
+        console.log("receving telemetry");
+
+        telemetryData[telemetryInfo.sensorId] = telemetryInfo;
+
+
+      });
+      call.on("end", function(){
+        console.log("no more telemetry , ending ");
+        console.log("telemetry data recevied was  ", telemetryData);
+      //todo , some error handling here
+      });
+
+
+
+    }
+
+
+  })
 
 server.bindAsync("0.0.0.0:40000", grpc.ServerCredentials.createInsecure(), function() {
   server.start()
