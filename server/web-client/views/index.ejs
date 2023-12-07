@@ -7,5 +7,29 @@
   <body>
     <h1><%= title %></h1>
     <p>Welcome to <%= title %></p>
+    <button onclick="registerLights()">Register Lights</button>
+    <div id="response"></div>
+
+    <script>
+      //my function to capture lights
+      async function registerLights(){
+        try{
+        const response = await fetch('http://localhost:3000/registerLights');
+
+        const data = await response.json();
+
+        document.getElementById('response').innerText = JSON.stringify(data, null, 2);
+
+
+      }
+        catch (error){
+        console.error('Error', error);
+      
+
+       }
+
+      }
+
+    </script>
   </body>
 </html>

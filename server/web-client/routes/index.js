@@ -10,19 +10,18 @@ var lightRegClient = new lightsProto.LightReg('0.0.0.0:40000', grpc.credentials.
 
 
 /* GET home page. */
-router.get('/regLights', function(req, res, next) {
+router.get('/registerLights', function(req, res, next) {
   try{
     lightRegClient.RegStreetLight({ streetLightId: 'LIGHT001', streetLightName: 'Test Light', streetLightZone: 1, streetLightLat: 0, streetLightLong: 0 },
-    {
+    
       function (error, response){
       try {
         res.render('index', { title: 'Light Registration', error: error, result: response.result });
 
       } catch (error) {
-        console.log(error)
+        console.log(error);
         res.render('index', { title: 'Light Registration', error: "Light Registration service not available", result: null });
       }
-    }
     });      
   
 } catch (error) {

@@ -1,0 +1,57 @@
+syntax = "proto3";
+
+package lights;
+
+service LightReg {
+    rpc RegStreetLight(StreetLightInfo) returns (LightRegResponse) {}
+
+}
+
+service Telemetry{
+    rpc StreamTelemetry(stream TelemetryInfo) returns (TelemetryConf) {}
+
+}
+
+service ControlMonitoring {
+    rpc ControlLights (stream LightCommand) returns (stream LightStatus) {}
+    rpc BroadcastLights (Empty) returns (stream LightStatus) {}
+
+}
+
+message StreetLightInfo {
+    string streetLightId = 1;
+    string streetLightName = 2;
+    int32 streetLightZone = 3;
+    double streetLightLat = 4;
+    double streetLightLong = 5;
+
+}
+
+message LightRegResponse {
+    bool streetLightRegStatus = 1;
+    string message = 2;
+}
+
+message TelemetryInfo{
+    string sensorId = 1;
+    int32 sensorZone = 2;
+    double luxReading = 3;
+
+}
+message TelemetryConf{
+    string telemetryInfo = 1;
+
+}
+
+message LightCommand {
+    string streetLightId = 1;
+    bool streetLightAction = 2;
+
+}
+
+message LightStatus {
+    string streetLightId = 1;
+    bool is_active =2;
+}
+
+message Empty {}
