@@ -9,7 +9,7 @@ var lightsProto = grpc.loadPackageDefinition(packageDefinition).lights;
 var lightRegClient = new lightsProto.LightReg('0.0.0.0:40000', grpc.credentials.createInsecure());
 
 
-/* GET home page. */
+/* where i am passing the info back to the server with the click button calling. */
 router.get('/registerLights', function(req, res, next) {
   try{
     lightRegClient.RegStreetLight({ streetLightId: 'LIGHT001', streetLightName: 'Test Light', streetLightZone: 1, streetLightLat: 0, streetLightLong: 0 },
@@ -31,4 +31,18 @@ router.get('/registerLights', function(req, res, next) {
       }
   });      
 
+
+/* this isn't working, lost in the arrays and i'm tired. 
+  router.get('/lightsData', function(req, res, next) {
+    try{
+      console.log('Console out of lights ', lights);
+      res.render('lightsData', { title: 'Lights Data', lights: lights})
+        } catch (error) {
+          console.log(error);
+          res.render('lightsData', { title: 'Lights Data', lights: null})
+        }
+      });      
+    
+*/
+ 
 module.exports = router;

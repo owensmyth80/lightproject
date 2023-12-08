@@ -9,9 +9,11 @@
     <p>Welcome to <%= title %></p>
     <button onclick="registerLights()">Register Lights</button>
     <div id="response"></div>
+    <h2>Streetlights Information</h2>
+    <ul id="streetlightsList"></ul>
 
     <script>
-      //my function to capture lights
+      //my function to capture lights, this works and i create a new light with it. 
       async function registerLights(){
         try{
         const response = await fetch('http://localhost:3000/registerLights');
@@ -20,15 +22,25 @@
 
         document.getElementById('response').innerText = JSON.stringify(data, null, 2);
 
-
-      }
+        updateStreetLightList(data);
+        }
         catch (error){
         console.error('Error', error);
-      
-
        }
+      } 
+      
+      function updateStreetLightList(data) {
+        const streetLightList = document.getElementById('streetLightList');
 
+        data.streetLightList.array.forEach(streetLight => {
+          const listItem = document.createElement('li');
+          listItem.textContent = `ID: ${streetlight.streetLightId}, Name: ${streetlight.streetLightName}, Zone: ${streetlight.streetLightZone}, Latitude: ${streetlight.streetLightLat}, Longitude: ${streetlight.streetLightLong}, Status: ${streetlight.is_on ? 'On' : 'Off'}`;
+          streetLightList.appendChild(listItem);
+          
+        });
       }
+
+
 
     </script>
   </body>
