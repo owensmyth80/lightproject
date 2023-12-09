@@ -21,5 +21,7 @@ as in, the light can turn on and off from either client or server side
 
 server side
 this will be a broadcast of the status of the lights
+going to BroadcastLights to server side and render the status in the webgui in a new view
+
 
 one the web client is done, i might change client code to allow me to manually updat the Lux readings and transmit 

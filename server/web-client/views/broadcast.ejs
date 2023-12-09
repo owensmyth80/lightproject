@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+    <title><%= title %></title>
+</head>
+<body>
+  <h1><%= title %></h1>
+  <h2>Lights Broadcast:</h2>
+  <ul>
+    <% if (lights && lights.length > 0) { %>
+      <% lights.forEach(light => { %>
+        <li>
+          <strong>Street Light ID:</strong> <%= light.streetLightId %><br>
+          <strong>Name:</strong> <%= light.streetLightName %><br>
+          <strong>Zone:</strong> <%= light.streetLightZone %><br>
+          <strong>Latitude:</strong> <%= light.streetLightLat %><br>
+          <strong>Longitude:</strong> <%= light.streetLightLong %><br>
+        </li>
+      <% }); %>
+    <% } else { %>
+      <li>No lights data available</li>
+    <% } %>
+  </ul>
+
+  <script>
+    async function getLightsInfo() {
+      const response = await fetch('http://localhost:3000/lightsData');
+      const data = await response.json();
+      
+      // Log data to the console
+      console.log(data);
+    }
+  </script>
+
+  </body>
+</html>

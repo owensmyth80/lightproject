@@ -14,7 +14,7 @@ service Telemetry{
 
 service ControlMonitoring {
     rpc ControlLights (stream LightCommand) returns (stream LightStatus) {}
-    rpc BroadcastLights (Empty) returns (stream LightStatus) {}
+    rpc BroadcastLights (Empty) returns (stream LightsInfo) {}
 
 }
 
@@ -24,6 +24,7 @@ message StreetLightInfo {
     int32 streetLightZone = 3;
     double streetLightLat = 4;
     double streetLightLong = 5;
+    bool is_on = 6;
 
 }
 
@@ -53,5 +54,14 @@ message LightStatus {
     string streetLightId = 1;
     bool is_active =2;
 }
+
+message LightsInfo {
+    string streetLightId = 1;
+    string streetLightName = 2;
+    int32 streetLightZone = 3;
+    double streetLightLat = 4;
+    double streetLightLong = 5;
+    bool is_on = 6;
+}    
 
 message Empty {}

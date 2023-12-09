@@ -11,25 +11,18 @@
   <h1><%= title %></h1>
   <h2>Lights Data:</h2>
 
-  <script>
-/* lost in this now, as i'm tired. wonder if i can configure the web client to read the broadcast from the server.. hm. might be beter */
-  async function fetchLightsData() {
-    try {
-      const response = await fetch('http://localhost:3000/lightsData');
-      const data = await response.json();
-      console.log('Lights Data:', data.lights);
-      document.getElementById('response').innerText = JSON.stringify(data, null, 2);
-    } catch (error) {
-      console.error('Error fetching lights data:', error);
-    }
-  }
+  
+    <ul>
+      <% for (let i = 0; i < lights.length; i++) { %>
+        <li>Light ID: <%= lights[i].streetLightId %>, Name: <%= lights[i].streetLightName %>, Zone: <%= lights[i].streetLightZone %></li>
+      <% } %>
+    </ul>
 
-  fetchLightsData();
+    <h2>Lights Data stringify:</h2>
+<pre><%= JSON.stringify(lights) %></pre>
 
-</script>
+ 
 
-
-  </script>
 
   </body>
 </html>
