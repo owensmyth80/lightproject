@@ -37,8 +37,11 @@ router.get('/registerLights', function(req, res, next) {
     try {
       const lightsStream = controlMonitoringClient.BroadcastLights({}); //this takes the stream from s
       const lightsDataReceived = [];
-  
+    //  const telemetryDataReceived = [];
+
       lightsStream.on('data', (lightMessage) => {
+      //  const telemetryData = lightMessage.telemetry;
+      //  console.log("telemetryData in index.htm has broadcast from server to web-client", lightMessage.telemetry);
         console.log("a light has broadcast from server to web-client light", lightMessage);
         console.log("a light has broadcast from server to web-client lightsDataRecieved", lightsDataReceived);
         lightsDataReceived.push(lightMessage);

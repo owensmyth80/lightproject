@@ -78,11 +78,19 @@ for (const tempLightArray of serverLightsArray) {
     streetLightLong: tempLightArray.streetLightLong,
     streetLightOn: tempLightArray.streetLightOn,
   };
-  
-  console.log('My server write to lightsInfoBroadcast ', lightsInfoBroadcast);
-  console.log('My server write to serverLightsArray ', serverLightsArray);
+
+  //take in the telemetry service and broadcast it here 
+
+ // const sensorId = tempLightArray.sensorId;
+ // if (telemetryData[sensorId]){
+ //   lightsInfoBroadcast.telemetry = telemetryData[sensorId];
+
+ // }
+   // console.log('My server write to telemetry ', telemetryData);
+    console.log('My server write to lightsInfoBroadcast ', lightsInfoBroadcast);
+    console.log('My server write to serverLightsArray ', serverLightsArray);
  // console.log('My server write to lights ', lights);
-  call.write(lightsInfoBroadcast);
+      call.write(lightsInfoBroadcast);
   
 }
 call.end();
@@ -115,7 +123,7 @@ call.end();
     },
     */
  
-
+ 
 server.bindAsync("0.0.0.0:40000", grpc.ServerCredentials.createInsecure(), function() {
   server.start()
 })
