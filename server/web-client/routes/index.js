@@ -35,29 +35,29 @@ router.get('/registerLights', function(req, res, next) {
 
   router.get('/lightsData', function(req, res, next) {
     try {
-      const lightsStream = controlMonitoringClient.BroadcastLights({});
-      const lightsData = [];
+      const lightsStream = controlMonitoringClient.BroadcastLights({}); //this takes the stream from s
+      const lightsDataReceived = [];
   
-      lightsStream.on('data', (light) => {
-        console.log("a light has broadcast from server to web-client light", light);
-        console.log("a light has broadcast from server to web-client lightsData", lightsData);
-        lightsData.push(light);
-        console.log("after the push to light ", light);
+      lightsStream.on('data', (lightMessage) => {
+        console.log("a light has broadcast from server to web-client light", lightMessage);
+        console.log("a light has broadcast from server to web-client lightsDataRecieved", lightsDataReceived);
+        lightsDataReceived.push(lightMessage);
+        console.log("after the push to light ", lightMessage);
       });
   
       lightsStream.on('end', () => {
 
-        console.log('Lights data console out from index.js in web-client :', lightsData);
-        res.render('lightsData', { title: 'Lights Data', lights: lightsData });
+        console.log('LightsDataReceived console out from index.js in web-client :', lightsDataReceived);
+        res.render('lightsData', { title: 'Lights Data', lightsOutToHtml: lightsDataReceived });
       });
   
       lightsStream.on('error', (error) => {
         console.error('Error fetching lights data:', error);
-        res.render('lightsData', { title: 'Lights Data', lights: null });
+        res.render('lightsData', { title: 'Lights Data', lightsOutToHtml: null });
       });
     } catch (error) {
       console.log(error);
-      res.render('lightsData', { title: 'Lights Data', lights: null });
+      res.render('lightsData', { title: 'Lights Data', lightsOutToHtml: null });
     }
   });     
     

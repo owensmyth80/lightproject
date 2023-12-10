@@ -13,13 +13,12 @@
 
   
     <ul>
-      <% for (let i = 0; i < lights.length; i++) { %>
-        <li>Light ID: <%= lights[i].streetLightId %>, Name: <%= lights[i].streetLightName %>, Zone: <%= lights[i].streetLightZone %></li>
+      <% for (let i = 0; i < lightsOutToHtml.length; i++) { %>
+        <li>Light ID: <%= lightsOutToHtml[i].streetLightId %>, Name: <%= lightsOutToHtml[i].streetLightName %>, Zone: <%= lightsOutToHtml[i].streetLightZone %></li>
       <% } %>
     </ul>
-
     <h2>Lights Data stringify:</h2>
-<pre><%= JSON.stringify(lights) %></pre>
+<pre><%= JSON.stringify(lightsOutToHtml) %></pre>
 
  
 

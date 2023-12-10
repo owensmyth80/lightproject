@@ -6,7 +6,7 @@ var packageDefinition = protoLoader.loadSync(
 )
 var proto = grpc.loadPackageDefinition(packageDefinition).lights
 //not sure if this should be a var or a const.,  might rename it lightsObject
-var lights = [];
+var serverLightsArray = [];
 var telemetryData = {};
 var server = new grpc.Server()
 
@@ -16,19 +16,19 @@ server.addService(proto.LightReg.service, {
 
     const newLight = { streetLightId, streetLightName, streetLightZone, streetLightLat, streetLightLong, streetLightOn };
     //lights[streetLightId] = { streetLightName, streetLightZone, streetLightLat, streetLightLong, is_on: false };
-    lights.push(newLight);
+    serverLightsArray.push(newLight);
     console.log(`Registered Streetlight: ${streetLightName} (${streetLightId})`);
 
     callback(null, { streetLightRegStatus: true, message: "Light Registered" });
     //console log all details to confirm they exist
-    console.log("The lights are ", lights);
+    console.log("The lights are ", serverLightsArray);
   },
   
 });
 
   //checking the var light 
-  if(Object.keys(lights).length > 0){
-    console.log("the lights in the var lights are ", lights);
+  if(Object.keys(serverLightsArray).length > 0){
+    console.log("the lights in the var lights are ", serverLightsArray);
   }
   else{
     console.log("nothing in the var lights");
@@ -68,20 +68,21 @@ server.addService(proto.Telemetry.service,  {
 server.addService(proto.ControlMonitoring.service, {
   BroadcastLights: (call) => {
  // 
-for (const light of lights) {
-  console.log('print out of lights first ', lights);
-  const lightsInfo = {
-    streetLightId: light.streetLightId,
-    streetLightName: light.streetLightName,
-    streetLightZone: light.streetLightZone,
-    streetLightLat: light.streetLightLat,
-    streetLightLong: light.streetLightLong,
-    streetLightOn: light.streetLightOn,
+for (const tempLightArray of serverLightsArray) {
+  console.log('print out of lights first ', serverLightsArray);
+  const lightsInfoBroadcast = {
+    streetLightId: tempLightArray.streetLightId,
+    streetLightName: tempLightArray.streetLightName,
+    streetLightZone: tempLightArray.streetLightZone,
+    streetLightLat: tempLightArray.streetLightLat,
+    streetLightLong: tempLightArray.streetLightLong,
+    streetLightOn: tempLightArray.streetLightOn,
   };
   
-  console.log('My server write to lightsInfo ', lightsInfo);
-  console.log('My server write to lights ', lights);
-  call.write(lightsInfo);
+  console.log('My server write to lightsInfoBroadcast ', lightsInfoBroadcast);
+  console.log('My server write to serverLightsArray ', serverLightsArray);
+ // console.log('My server write to lights ', lights);
+  call.write(lightsInfoBroadcast);
   
 }
 call.end();
