@@ -43,6 +43,7 @@ server.addService(proto.LightReg.service, {
       
   }
 
+
 server.addService(proto.Telemetry.service,  {
   StreamTelemetry: (call) => {
     call.on("data", (telemetryInfo) => {
@@ -65,6 +66,7 @@ server.addService(proto.Telemetry.service,  {
     },
   });
 
+              
 server.addService(proto.ControlMonitoring.service, {
   BroadcastLights: (call) => {
  // 
@@ -99,6 +101,80 @@ call.end();
     },
 
  }); 
+ //my function to have interval and provide updates fo telemtry data
+ function sendTelemetryUpdates(controlStream) {
+  setInterval(() => {
+    for (const sensorId in telemetryData) {
+      if (telemetryData.hasOwnProperty(sensorId)) {
+        const sensor = telemetryData[sensorId];
+        if (sensor.luxReading > 50) {
+          const responseMessage = {
+            name: "Server Says",
+            message: `Zone ${sensor.sensorZone}: Lights On (Lux Reading: ${sensor.luxReading})`,
+          };
+          controlStream.write(responseMessage);
+        }
+      }
+    }
+  }, 50000); 
+}
+
+ server.addService(proto.ControlComms.service, {
+  ControlLights: (call) => {
+    // stream created
+    const controlStream = server.controlStream = call;
+    sendTelemetryUpdates(controlStream);
+    // data int
+    controlStream.on("data", (chatMessage) => {
+      // inbound clients
+      console.log(`Received message from client: ${chatMessage.name} - ${chatMessage.message}`);
+
+      // writing to all connected clients
+      controlStream.write(chatMessage);
+
+      // response message to be updated to include the if from telemetry, 
+      /*
+      const responseMessage = {
+        name: "Server says Zone 1 Update",
+        message: "Server received your message.",
+      };
+      
+     for (const sensorId in telemetryData){
+        if (telemetryData.hasOwnProperty(sensorId)){
+          const sensor = telemetryData[sensorId];
+          if(sensor.luxReading > 50){
+            const responseMessage = {
+              name: "Server sayss",
+              message: `Zone ${sensor.sensorZone}: Lights On (Lux Reading: ${sensor.luxReading})`
+            };
+          controlStream.write(responseMessage);
+          }
+
+
+        }
+
+
+     }
+ */     
+    });
+
+    controlStream.on("end", () => {
+      // console log to end streaming if client does so
+      console.log("Client has ended the streaming.");
+    });
+
+    controlStream.on("error", (e) => {
+      // Handle errors
+      console.error("Error in ControlLights:", e);
+    });
+
+    controlStream.on("status", (status) => {
+      // Handle status updates
+      console.log("Received status:", status);
+    });
+  },
+});
+
     /*/ Send lights info to the client as they become available.. ffs object, i'm using array
     for (const streetLightId in lights) {
       if (lights.hasOwnProperty(streetLightId)) {

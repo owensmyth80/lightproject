@@ -15,9 +15,9 @@ function mathRandomLux() {
 
 function sendTelemetry() {
   var telemetryData = [
-    { sensorId: "LIGHTSENSE0001", sensorZone: "1", luxReading: mathRandomLux() },
-    { sensorId: "LIGHTSENSE0002", sensorZone: "2", luxReading: mathRandomLux() },
-    { sensorId: "LIGHTSENSE0003", sensorZone: "3", luxReading: mathRandomLux() }
+    { sensorId: "sensor1", sensorZone: "1", luxReading: mathRandomLux() },
+    { sensorId: "sensor2", sensorZone: "2", luxReading: mathRandomLux() },
+    { sensorId: "sensor3", sensorZone: "3", luxReading: mathRandomLux() }
   ];
 
   var telemetryStream = telemetryClient.StreamTelemetry(function(error, response) {

@@ -19,21 +19,26 @@ function handleResponse(error, response) {
       console.log(response.message);
     }
   }
+  var controlCommsClient = new lights.ControlComms("0.0.0.0:40000", grpc.credentials.createInsecure());
+  controlStream = controlCommsClient.ControlLights();
+  // Example: Send a message to the server
+  var clientMessage = { name: "I'm ", message: "Zone 1" };
+  
+  controlStream.write(clientMessage);
 
-//var telemetryClient = new lights.Telemetry("0.0.0.0:40000", grpc.credentials.createInsecure());
-//var telemetryStream = telemetryClient.StreamTelemetry(function(error, response) {
-//    if (error) {
-//      console.error('Error Telementry Service :', error);
-//    } else {
-//      console.log(response.message);
-//    }
-//  });
+  controlStream.on("data", (serverMessage) => {
+      // incoming messages from the server
+      console.log(`Received message from server: ${serverMessage.name} - ${serverMessage.message}`);
+    })
+  controlStream.on("end", () => {
+      // Server has ended the streaming
+      console.log("Server has ended the streaming.");
+    });
+  controlStream.on("error", (e) => {
+  console.error("Error in ControlLights:", e);
+  });
 
-//  telemetryStream.write({ sensorId: "LIGHTSENSE0001", sensorZone: "1", luxReading: 70.0 });
-//  telemetryStream.write({ sensorId: "LIGHTSENSE0002", sensorZone: "2", luxReading: 55.0 });
-//  telemetryStream.write({ sensorId: "LIGHTSENSE0003", sensorZone: "3", luxReading: 59.0 });
 
-//  telemetryStream.end();
 
 
 

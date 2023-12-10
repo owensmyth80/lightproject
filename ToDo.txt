@@ -1,23 +1,29 @@
 create unary to register devices
-populate with 3 examples manually
-should i consider mapping them to zones? then the other sensors map to zones?
-consider doing this via user input
+populate with 3 examples manually 1 DONE
+created 1 for now, but the server side array supports multipled.  
+should i consider mapping them to zones? then the other sensors map to zones?   DONE
+consider doing this via user input   NO, i'll keep it in the client as is  DONE
 
 
 client side streaming
-create a sensor taht provides telemetry temp/lux , perhaps 1 per light...
-update server side to accept data and store it. 
+create a sensor taht provides telemetry lux , perhaps 1 per light...     DONE
+update server side to accept data and store it.      DONE
 
 
 the web-client gui 
 should contain the 4 zones, 4 lights and 4 senors with the abillity to turn them on and off but also update of the sensors change by automation logic based on sensors
 i have create the express-js , deleted uncessary lines and changed to port 8080 
 the web-clietn gui, is allowing me to register a new LIGHT. 
-i kinda want it to render the already registered lights on the server. and OK allow me to create new ones and modify existing. 
+i kinda want it to render the already registered lights on the server. and OK allow me to create new ones and modify existing.    
+LightData is rendering the array of lights 
+need to bring in the telemetry one, with a refresh
 
 bi-directionaly
 used to manage light based on telemetry and update status
 as in, the light can turn on and off from either client or server side 
+the server side is working based on telemetry, need to update client to reponse if action is required.
+
+
 
 server side
 this will be a broadcast of the status of the lights
