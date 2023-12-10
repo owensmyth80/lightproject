@@ -12,9 +12,9 @@ var server = new grpc.Server()
 
 server.addService(proto.LightReg.service, {
   RegStreetLight: (call, callback) => {
-    const { streetLightId, streetLightName, streetLightZone, streetLightLat, streetLightLong, is_on } = call.request;
+    const { streetLightId, streetLightName, streetLightZone, streetLightLat, streetLightLong, streetLightOn } = call.request;
 
-    const newLight = { streetLightId, streetLightName, streetLightZone, streetLightLat, streetLightLong, is_on };
+    const newLight = { streetLightId, streetLightName, streetLightZone, streetLightLat, streetLightLong, streetLightOn };
     //lights[streetLightId] = { streetLightName, streetLightZone, streetLightLat, streetLightLong, is_on: false };
     lights.push(newLight);
     console.log(`Registered Streetlight: ${streetLightName} (${streetLightId})`);
@@ -76,7 +76,7 @@ for (const light of lights) {
     streetLightZone: light.streetLightZone,
     streetLightLat: light.streetLightLat,
     streetLightLong: light.streetLightLong,
-    //is_on: light.is_on,
+    streetLightOn: light.streetLightOn,
   };
   
   console.log('My server write to lightsInfo ', lightsInfo);

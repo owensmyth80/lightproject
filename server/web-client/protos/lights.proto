@@ -24,7 +24,7 @@ message StreetLightInfo {
     int32 streetLightZone = 3;
     double streetLightLat = 4;
     double streetLightLong = 5;
-    bool is_on = 6;
+    bool streetLightOn = 6;
 
 }
 
@@ -61,7 +61,7 @@ message LightsInfo {
     int32 streetLightZone = 3;
     double streetLightLat = 4;
     double streetLightLong = 5;
-    bool is_on = 6;
+    bool streetLightOn = 6;
 }    
 
 message Empty {}
