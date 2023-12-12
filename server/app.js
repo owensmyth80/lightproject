@@ -110,7 +110,10 @@ call.end();
         if (sensor.luxReading > 50) {
           const responseMessage = {
             name: "Server Says",
-            message: `Zone ${sensor.sensorZone}: Lights On (Lux Reading: ${sensor.luxReading})`,
+            messageZone: `Zone ${sensor.sensorZone}: Lights On (Lux Reading: ${sensor.luxReading})`,
+            //streetLightOn: true,   //not sure about this one, do i need it? it has no value here. but will show up undefined..
+            messageCommand: "ON",
+           // streetLightOn: ${serverLightsArray.streetLightOn},
           };
           controlStream.write(responseMessage);
         }
@@ -127,7 +130,8 @@ call.end();
     // data int
     controlStream.on("data", (chatMessage) => {
       // inbound clients
-      console.log(`Received message from client: ${chatMessage.name} - ${chatMessage.message}`);
+      //console.log(`Received message from client: ${chatMessage.name} - ${chatMessage.messageZone} StreetLight On is: ${chatMessage.streetLightOn}`);
+      console.log(`Received message from client: ${chatMessage.name} - ${chatMessage.messageZone}`);
 
       // writing to all connected clients
       controlStream.write(chatMessage);
