@@ -43,11 +43,11 @@ function handleResponse(error, response) {
       console.log(`Received message from server: ${serverMessage.name} - ${serverMessage.messageZone} - ${serverMessage.messageCommand || 'No Message Command'}`);
     
 
-    if (serverMessage.messageZone.includes(streetLightZone)) {
+    if (serverMessage.messageZone.includes(streetLightZone) && (serverMessage.messageCommand === "ON")) {
       // it should only apply if the Zone in message from server, is the same as the light zone
       if (streetLightOn) {
           // consider if the light was already set to on , by another telemetry
-          clientMessage = {name: streetLightId, messageZone: `Zone ${streetLightZone}`,messageCommand: 'Light already on, nothing to do'
+          clientMessage = {name: streetLightId, messageZone: `Zone ${streetLightZone}`, messageCommand: 'Light already on, nothing to do'
           };
       } else {
           // if not true, then we set it to true and send comm back with confirmation
@@ -56,9 +56,10 @@ function handleResponse(error, response) {
               name: streetLightId, messageZone: `Zone ${streetLightZone}`, messageCommand: `Street light changed to ${streetLightOn}`
           };
       }
+      console.log('what is street light now before client '+streetLightOn);
       controlStream.write(clientMessage);
   }
-});
+
   controlStream.on("end", () => {
       // Server has ended the streaming
       console.log("Server has ended the streaming.");
@@ -67,7 +68,7 @@ function handleResponse(error, response) {
   console.error("Error in ControlLights:", e);
   });
 
-
+});
 
 
 

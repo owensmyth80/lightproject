@@ -10,6 +10,7 @@ var serverLightsArray = [];
 var telemetryData = {};
 var server = new grpc.Server()
 
+//creating array serverLightsArray and pushing any new lights to it.
 server.addService(proto.LightReg.service, {
   RegStreetLight: (call, callback) => {
     const { streetLightId, streetLightName, streetLightZone, streetLightLat, streetLightLong, streetLightOn } = call.request;
@@ -107,7 +108,7 @@ call.end();
     for (const sensorId in telemetryData) {
       if (telemetryData.hasOwnProperty(sensorId)) {
         const sensor = telemetryData[sensorId];
-        if (sensor.luxReading > 50) {
+        if (sensor.luxReading < 50) {
           const responseMessage = {
             name: "Server Says",
             messageZone: `Zone ${sensor.sensorZone}: Lights On (Lux Reading: ${sensor.luxReading})`,
@@ -131,7 +132,7 @@ call.end();
     controlStream.on("data", (chatMessage) => {
       // inbound clients
       //console.log(`Received message from client: ${chatMessage.name} - ${chatMessage.messageZone} StreetLight On is: ${chatMessage.streetLightOn}`);
-      console.log(`Received message from client: ${chatMessage.name} - ${chatMessage.messageZone}`);
+      console.log(`Received message from client: ${chatMessage.name} - ${chatMessage.messageZone} - ${chatMessage.messageCommand}`);
 
       // writing to all connected clients
       controlStream.write(chatMessage);
