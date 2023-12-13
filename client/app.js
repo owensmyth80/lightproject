@@ -47,8 +47,7 @@ function handleResponse(error, response) {
       // it should only apply if the Zone in message from server, is the same as the light zone
       if (streetLightOn) {
           // consider if the light was already set to on , by another telemetry
-          clientMessage = {name: streetLightId, messageZone: `Zone ${streetLightZone}`, messageCommand: 'Light already on, nothing to do'
-          };
+          clientMessage = {name: streetLightId, messageZone: `Zone ${streetLightZone}`, messageCommand: 'Light already on, nothing to do'};
       } else {
           // if not true, then we set it to true and send comm back with confirmation
           streetLightOn = true;
@@ -56,11 +55,25 @@ function handleResponse(error, response) {
               name: streetLightId, messageZone: `Zone ${streetLightZone}`, messageCommand: `Street light changed to ${streetLightOn}`
           };
       }
-      console.log('what is street light now before client '+streetLightOn);
+      console.log('what is street light now before client AT ON IF here '+streetLightOn);
       controlStream.write(clientMessage);
   }
-
-  controlStream.on("end", () => {
+    else if (serverMessage.messageZone.includes(streetLightZone) && (serverMessage.messageCommand === "OFF")) {
+    // it should only apply if the Zone in message from server, is the same as the light zone
+      if (!streetLightOn) {
+        // consider if the light was already set to OFF , by another telemetry
+        clientMessage = {name: streetLightId, messageZone: `Zone ${streetLightZone}`, messageCommand: 'Light already OFF, nothing to do'};
+    }   else {
+        // update to false, then we set it to true and send comm back with confirmation
+        streetLightOn = false;
+        clientMessage = {
+            name: streetLightId, messageZone: `Zone ${streetLightZone}`, messageCommand: `Street light changed to ${streetLightOn}`
+        };
+    }
+    console.log('what is street light now before client AT OFF IF here '+streetLightOn);
+    controlStream.write(clientMessage);
+  }
+    controlStream.on("end", () => {
       // Server has ended the streaming
       console.log("Server has ended the streaming.");
     });

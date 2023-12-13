@@ -115,11 +115,21 @@ call.end();
             //streetLightOn: true,   //not sure about this one, do i need it? it has no value here. but will show up undefined..
             messageCommand: "ON",
            // streetLightOn: ${serverLightsArray.streetLightOn},
-          };
+          };    
           controlStream.write(responseMessage);
+
         }
+        if (sensor.luxReading > 50) {
+          const responseMessage = {
+            name: "Server Says",
+            messageZone: `Zone ${sensor.sensorZone}: Lights OFF (Lux Reading: ${sensor.luxReading})`,
+            messageCommand: "OFF",
+           // streetLightOn: ${serverLightsArray.streetLightOn},
+          };    
+          controlStream.write(responseMessage);
       }
     }
+  }
   }, 50000); 
 }
 
