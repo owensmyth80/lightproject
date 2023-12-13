@@ -7,7 +7,7 @@ var packageDefinition = protoLoader.loadSync(
 var proto = grpc.loadPackageDefinition(packageDefinition).lights
 //not sure if this should be a var or a const.,  might rename it lightsObject
 var serverLightsArray = [];
-var telemetryData = {};
+var telemetryData = [];
 var server = new grpc.Server()
 
 //creating array serverLightsArray and pushing any new lights to it.
@@ -96,6 +96,8 @@ for (const tempLightArray of serverLightsArray) {
       call.write(lightsInfoBroadcast);
   
 }
+
+
 call.end();
 
 
@@ -111,7 +113,7 @@ call.end();
         if (sensor.luxReading < 50) {
           const responseMessage = {
             name: "Server Says",
-            messageZone: `Zone ${sensor.sensorZone}: Lights On (Lux Reading: ${sensor.luxReading})`,
+            messageZone: `Zone ${sensor.sensorZone}: Lights ON (Lux Reading: ${sensor.luxReading})`,
             //streetLightOn: true,   //not sure about this one, do i need it? it has no value here. but will show up undefined..
             messageCommand: "ON",
            // streetLightOn: ${serverLightsArray.streetLightOn},

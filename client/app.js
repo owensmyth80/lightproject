@@ -42,8 +42,8 @@ function handleResponse(error, response) {
       //console.log(`Received message from server: ${serverMessage.name} - ${serverMessage.messageZone} - ${serverMessage.streetLightOn} - ${serverMessage.messageCommand}`);
       console.log(`Received message from server: ${serverMessage.name} - ${serverMessage.messageZone} - ${serverMessage.messageCommand || 'No Message Command'}`);
     
-
-    if (serverMessage.messageZone.includes(streetLightZone) && (serverMessage.messageCommand === "ON")) {
+//updated teh includes to have string Zone, to prevent the issues seen with it reading the number twice if it was also in the telemetry. 
+    if (serverMessage.messageZone.includes('Zone '+ streetLightZone,) && (serverMessage.messageCommand === "ON")) {
       // it should only apply if the Zone in message from server, is the same as the light zone
       if (streetLightOn) {
           // consider if the light was already set to on , by another telemetry
@@ -58,7 +58,7 @@ function handleResponse(error, response) {
       console.log('what is street light now before client AT ON IF here '+streetLightOn);
       controlStream.write(clientMessage);
   }
-    else if (serverMessage.messageZone.includes(streetLightZone) && (serverMessage.messageCommand === "OFF")) {
+    else if (serverMessage.messageZone.includes('Zone '+ streetLightZone,) && (serverMessage.messageCommand === "OFF")) {
     // it should only apply if the Zone in message from server, is the same as the light zone
       if (!streetLightOn) {
         // consider if the light was already set to OFF , by another telemetry
