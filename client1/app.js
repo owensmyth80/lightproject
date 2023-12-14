@@ -10,10 +10,10 @@ var lightRegClient = new lights.LightReg("0.0.0.0:40000", grpc.credentials.creat
 
 //changes these to variable, will want to modify the streetLightOn value based on server message in bi-directioanl
 var streetLightId = "LIGHT0001";
-var streetLightName = "Park  Light 1";
+var streetLightName = "Phonex Park Vistors Centre";
 var streetLightZone = "1";
-var streetLightLat = 53.34889;
-var streetLightLong = -6.31336
+var streetLightLat = 53.36700440153177;
+var streetLightLong = -6.330489524428996;
 var streetLightOn = false;
 //removiing other lights, so each client is a different light for the bidirectional control.
 lightRegClient.RegStreetLight({ streetLightId, streetLightName, streetLightZone, streetLightLat, streetLightLong, streetLightOn }, handleResponse);
