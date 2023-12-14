@@ -134,11 +134,17 @@ call.end();
   }
   }, 50000); 
 }
-
- server.addService(proto.ControlComms.service, {
+  //Examples of the messages received from client when setting true or false, want to build logic that updates the serverLightsArray
+  //LIGHT0001 - Zone 1 - Street light changed to false
+  //LIGHT0001 - Zone 1 - Street light changed to true
+  //streetLightId = chatMessage.name
+  //streetLightOn  Street light changed to true ,, then update for LIGHT0001 the value of streetLightOn in serverLightsArray
+  //streetLightOn  Street light changed to false
+  server.addService(proto.ControlComms.service, {
   ControlLights: (call) => {
     // stream created
     const controlStream = server.controlStream = call;
+    //using the function above.
     sendTelemetryUpdates(controlStream);
     // data int
     controlStream.on("data", (chatMessage) => {
