@@ -134,7 +134,7 @@ call.end();
   }
   }, 50000); 
 }
-  //Examples of the messages received from client when setting true or false, want to build logic that updates the serverLightsArray
+  //Examples of the messages received fromwhen setting true or false, want to build logic that updates the serverLightsArray
   //LIGHT0001 - Zone 1 - Street light changed to false
   //LIGHT0001 - Zone 1 - Street light changed to true
   //streetLightId = chatMessage.name
@@ -151,7 +151,22 @@ call.end();
       // inbound clients
       //console.log(`Received message from client: ${chatMessage.name} - ${chatMessage.messageZone} StreetLight On is: ${chatMessage.streetLightOn}`);
       console.log(`Received message from client: ${chatMessage.name} - ${chatMessage.messageZone} - ${chatMessage.messageCommand}`);
-
+      //checking for the index in the array for the light.streetLight , need to check this is scaleable. more clients etc. 
+      //had to update the initial client message as inital message didn't have messageCommand which broke the app.
+      const lightIndex = serverLightsArray.findIndex(light => light.streetLightId === chatMessage.name);
+      
+      //If here as this should only run if it is found.
+      if (lightIndex !== -1) {
+        // Update streetLightOn based on the messageCommand containing "change to true" or 'changed to false' - in real world i'd just 0 and 1 here.
+        if (chatMessage.messageCommand.includes('changed to true')) {
+          //update the streetLightOn value at index in the array value to true
+          serverLightsArray[lightIndex].streetLightOn = true;
+          
+        } else if (chatMessage.messageCommand.includes('changed to false')) {
+          //update the array value to false.
+          serverLightsArray[lightIndex].streetLightOn = false;
+        }
+      }
       // writing to all connected clients
       controlStream.write(chatMessage);
 
