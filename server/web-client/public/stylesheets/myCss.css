@@ -1,11 +1,15 @@
-/*<!--CSS by Owen Smyth-->*/
+/*<!--CSS by Owen Smyth, reused from HTML module project-->*/
 body{
 	background-color: #ffffff;
-	background-image:url(../images/aboutUsBackGround.webp);
+	background-image:url(../images/background.png);
 	background-repeat: no-repeat;
 	background-size: cover;
-	text-align: center;
+	text-align: left;
 	color:black;
+}
+
+makeBold{
+	font-weight: bold;
 }
 /*<!--font on the nav bar container-->*/
 .container-fluid{
@@ -17,9 +21,9 @@ body{
 	font-size: 1.25rem;
 	font-weight: 500;
 }
-/*<!--media query to hide both pics on smaller devices-->*/
+/*<!--media query to hide pics on smaller devices-->*/
 @media screen and (max-width: 600px) {       
-	#aboutUsPic1, #aboutUsPic2{
+	#aboutUsPic1 {
 		display: none;
 	}
 }
