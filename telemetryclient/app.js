@@ -27,9 +27,18 @@ function sendTelemetry() {
       console.log(response.message);
     }
   });
-
+//adding additional error handling
   telemetryData.forEach(data =>{
-    telemetryStream.write(data);
+    telemetryStream.write(data, function (error){
+      if (error) {
+        console.error('there has been an error writing telemetry', error);
+
+      }else{
+        console.log('sent telemetry OK!');
+
+      }
+
+    });
   });
 
   telemetryStream.end();

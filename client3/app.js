@@ -18,10 +18,6 @@ var streetLightOn = false;
 //removiing other lights, so each client is a different light for the bidirectional control.
 lightRegClient.RegStreetLight({ streetLightId, streetLightName, streetLightZone, streetLightLat, streetLightLong, streetLightOn }, handleResponse);
 
-//lightRegClient.RegStreetLight({ streetLightId: "LIGHT0001", streetLightName: "Park Light 1", streetLightZone: 1, streetLightLat: 53.34889, streetLightLong: -6.31336, streetLightOn: false }, handleResponse);
-//lightRegClient.RegStreetLight({ streetLightId: "LIGHT0002", streetLightName: "Park Light 2", streetLightZone: 2, streetLightLat: 53.35027, streetLightLong: -6.31530, streetLightOn: false }, handleResponse);
-//lightRegClient.RegStreetLight({ streetLightId: "LIGHT0003", streetLightName: "Park Light 3", streetLightZone: 3, streetLightLat: 53.35233, streetLightLong: -6.32303, streetLightOn: false }, handleResponse);
-
 function handleResponse(error, response) {
     if (error) {
       console.error('Error:', error);
@@ -40,7 +36,6 @@ function handleResponse(error, response) {
 
   controlStream.on("data", (serverMessage) => {
       // incoming messages from the server
-      //console.log(`Received message from server: ${serverMessage.name} - ${serverMessage.messageZone} - ${serverMessage.streetLightOn} - ${serverMessage.messageCommand}`);
       console.log(`Received message from server: ${serverMessage.name} - ${serverMessage.messageZone} - ${serverMessage.messageCommand || 'No Message Command'}`);
     
 //updated teh includes to have string Zone, to prevent the issues seen with it reading the number twice if it was also in the telemetry. 

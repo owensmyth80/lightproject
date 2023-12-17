@@ -5,14 +5,17 @@ var packageDefinition = protoLoader.loadSync(
   PROTO_PATH
 )
 var proto = grpc.loadPackageDefinition(packageDefinition).lights
-//not sure if this should be a var or a const.,  might rename it lightsObject
+//declaring my array
 var serverLightsArray = [];
 var telemetryData = [];
 var server = new grpc.Server()
 
+//the LightReg service for clients to register new lights in the server.
 //creating array serverLightsArray and pushing any new lights to it.
+//adding additional error handling given the marking schemee.
 server.addService(proto.LightReg.service, {
   RegStreetLight: (call, callback) => {
+    try{
     const { streetLightId, streetLightName, streetLightZone, streetLightLat, streetLightLong, streetLightOn } = call.request;
 
     const newLight = { streetLightId, streetLightName, streetLightZone, streetLightLat, streetLightLong, streetLightOn };
@@ -23,11 +26,15 @@ server.addService(proto.LightReg.service, {
     callback(null, { streetLightRegStatus: true, message: "Light Registered" });
     //console log all details to confirm they exist
     console.log("The lights are ", serverLightsArray);
+    //catch in error and console out.
+    } catch (error){
+      console.error('Error in RegStreetLight');
+    }
   },
-  
+
 });
 
-  //checking the var light 
+  //checking for the values in the Light Array and outputting them
   if(Object.keys(serverLightsArray).length > 0){
     console.log("the lights in the var lights are ", serverLightsArray);
   }
@@ -44,32 +51,37 @@ server.addService(proto.LightReg.service, {
       
   }
 
-
+//adding try and catch for error handling.
 server.addService(proto.Telemetry.service,  {
   StreamTelemetry: (call) => {
     call.on("data", (telemetryInfo) => {
+
+      try{
       console.log("receving telemetry");
 
       telemetryData[telemetryInfo.sensorId] = telemetryInfo;
-
+      }catch (error){
+        console.error('there has been an error with telemetry data', error);
+      }
 
 });
     call.on("end", function(){
       console.log("no more telemetry , ending ");
       console.log("telemetry data recevied was  ", telemetryData);
-      //todo , some error handling here
       
 });
     call.on('error', function(e){
-      console.log('there has been and error')
+      console.log('there has been and error at telemetry stream', e);
 
     });
     },
   });
 
-              
+//ControlMonitoring is my server broadcast of the status of the lights in the lights array        
 server.addService(proto.ControlMonitoring.service, {
   BroadcastLights: (call) => {
+    //adding a try for improved error handling:
+    try{
  // 
 for (const tempLightArray of serverLightsArray) {
   console.log('print out of lights first ', serverLightsArray);
@@ -84,22 +96,21 @@ for (const tempLightArray of serverLightsArray) {
 
   //take in the telemetry service and broadcast it here 
 
- // const sensorId = tempLightArray.sensorId;
- // if (telemetryData[sensorId]){
- //   lightsInfoBroadcast.telemetry = telemetryData[sensorId];
-
- // }
-   // console.log('My server write to telemetry ', telemetryData);
     console.log('My server write to lightsInfoBroadcast ', lightsInfoBroadcast);
     console.log('My server write to serverLightsArray ', serverLightsArray);
- // console.log('My server write to lights ', lights);
+ // write out the values
       call.write(lightsInfoBroadcast);
   
 }
 
+call.on('error', (error) => {
+  console.error('Error in BroadcastLights:', error);
+});
 
 call.end();
-
+    }catch (error){
+      console.error('there has been an error in broadcastLights', error);
+    }
 
     },
 
@@ -114,9 +125,9 @@ call.end();
           const responseMessage = {
             name: "Server Says",
             messageZone: `Zone ${sensor.sensorZone}: Lights ON (Lux Reading: ${sensor.luxReading})`,
-            //streetLightOn: true,   //not sure about this one, do i need it? it has no value here. but will show up undefined..
+            //command to client to turn ON
             messageCommand: "ON",
-           // streetLightOn: ${serverLightsArray.streetLightOn},
+          
           };    
           controlStream.write(responseMessage);
 
@@ -125,8 +136,8 @@ call.end();
           const responseMessage = {
             name: "Server Says",
             messageZone: `Zone ${sensor.sensorZone}: Lights OFF (Lux Reading: ${sensor.luxReading})`,
+            //command to client to turn OFF
             messageCommand: "OFF",
-           // streetLightOn: ${serverLightsArray.streetLightOn},
           };    
           controlStream.write(responseMessage);
       }
@@ -134,25 +145,20 @@ call.end();
   }
   }, 50000); 
 }
-  //Examples of the messages received fromwhen setting true or false, want to build logic that updates the serverLightsArray
-  //LIGHT0001 - Zone 1 - Street light changed to false
-  //LIGHT0001 - Zone 1 - Street light changed to true
-  //streetLightId = chatMessage.name
-  //streetLightOn  Street light changed to true ,, then update for LIGHT0001 the value of streetLightOn in serverLightsArray
-  //streetLightOn  Street light changed to false
+  //bi-directional service for client <> communicationss to handle on/off commands based on the telemetry array values:
   server.addService(proto.ControlComms.service, {
   ControlLights: (call) => {
+    
     // stream created
     const controlStream = server.controlStream = call;
     //using the function above.
     sendTelemetryUpdates(controlStream);
-    // data int
-    controlStream.on("data", (chatMessage) => {
-      // inbound clients
-      //console.log(`Received message from client: ${chatMessage.name} - ${chatMessage.messageZone} StreetLight On is: ${chatMessage.streetLightOn}`);
+    
+      controlStream.on("data", (chatMessage) => {
+      try {  
+
       console.log(`Received message from client: ${chatMessage.name} - ${chatMessage.messageZone} - ${chatMessage.messageCommand}`);
-      //checking for the index in the array for the light.streetLight , need to check this is scaleable. more clients etc. 
-      //had to update the initial client message as inital message didn't have messageCommand which broke the app.
+      //checking for the index in the array for the light.streetLight
       const lightIndex = serverLightsArray.findIndex(light => light.streetLightId === chatMessage.name);
       
       //If here as this should only run if it is found.
@@ -169,31 +175,9 @@ call.end();
       }
       // writing to all connected clients
       controlStream.write(chatMessage);
-
-      // response message to be updated to include the if from telemetry, 
-      /*
-      const responseMessage = {
-        name: "Server says Zone 1 Update",
-        message: "Server received your message.",
-      };
-      
-     for (const sensorId in telemetryData){
-        if (telemetryData.hasOwnProperty(sensorId)){
-          const sensor = telemetryData[sensorId];
-          if(sensor.luxReading > 50){
-            const responseMessage = {
-              name: "Server sayss",
-              message: `Zone ${sensor.sensorZone}: Lights On (Lux Reading: ${sensor.luxReading})`
-            };
-          controlStream.write(responseMessage);
-          }
-
-
-        }
-
-
-     }
- */     
+    } catch (error){
+      console.error('Error at client message on the server', error);
+    }
     });
 
     controlStream.on("end", () => {
@@ -212,30 +196,6 @@ call.end();
     });
   },
 });
-
-    /*/ Send lights info to the client as they become available.. ffs object, i'm using array
-    for (const streetLightId in lights) {
-      if (lights.hasOwnProperty(streetLightId)) {
-        const light = lights[streetLightId];
-        const lightsInfo = {
-          streetLightId: light.streetLightId,
-          streetLightName: light.streetLightName,
-          streetLightZone: light.streetLightZone,
-          streetLightLat: light.streetLightLat,
-          streetLightLong: light.streetLightLong,
-          is_on: light.is_on,
-          };      
-          console.log('My server write to lightsInfo ', lightsInfo);
-          console.log('My server write to lights ', lights);
-          call.write(lightsInfo);
-        }
-      }
-      call.end();
-      //console.log('My server side console out of lights data ', lights);
-
-
-    },
-    */
  
  
 server.bindAsync("0.0.0.0:40000", grpc.ServerCredentials.createInsecure(), function() {

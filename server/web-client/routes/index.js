@@ -6,11 +6,11 @@ var protoLoader = require('@grpc/proto-loader');
 var PROTO_PATH = __dirname + '/../protos/lights.proto';
 var packageDefinition = protoLoader.loadSync(PROTO_PATH);
 var lightsProto = grpc.loadPackageDefinition(packageDefinition).lights;
-var lightRegClient = new lightsProto.LightReg('0.0.0.0:40000', grpc.credentials.createInsecure());
+//var lightRegClient = new lightsProto.LightReg('0.0.0.0:40000', grpc.credentials.createInsecure());
 var controlMonitoringClient = new lightsProto.ControlMonitoring('0.0.0.0:40000', grpc.credentials.createInsecure());
 
 
-/* where i am passing the info back to the server with the click button calling. */
+/* where i am passing the info back to the server with the click button calling. 
 router.get('/registerLights', function(req, res, next) {
   try{
     lightRegClient.RegStreetLight({ streetLightId: 'LIGHT001', streetLightName: 'Test Light', streetLightZone: 1, streetLightLat: 0, streetLightLong: 0 },
@@ -31,7 +31,7 @@ router.get('/registerLights', function(req, res, next) {
   res.render('index', { title: 'Light Registration', error: "Light Registration service not available", result: null });
       }
   });      
-
+*/
 
   router.get('/lightsData', function(req, res, next) {
     try {

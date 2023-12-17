@@ -18,10 +18,6 @@ var streetLightOn = false;
 //removiing other lights, so each client is a different light for the bidirectional control.
 lightRegClient.RegStreetLight({ streetLightId, streetLightName, streetLightZone, streetLightLat, streetLightLong, streetLightOn }, handleResponse);
 
-//lightRegClient.RegStreetLight({ streetLightId: "LIGHT0001", streetLightName: "Park Light 1", streetLightZone: 1, streetLightLat: 53.34889, streetLightLong: -6.31336, streetLightOn: false }, handleResponse);
-//lightRegClient.RegStreetLight({ streetLightId: "LIGHT0002", streetLightName: "Park Light 2", streetLightZone: 2, streetLightLat: 53.35027, streetLightLong: -6.31530, streetLightOn: false }, handleResponse);
-//lightRegClient.RegStreetLight({ streetLightId: "LIGHT0003", streetLightName: "Park Light 3", streetLightZone: 3, streetLightLat: 53.35233, streetLightLong: -6.32303, streetLightOn: false }, handleResponse);
-
 function handleResponse(error, response) {
     if (error) {
       console.error('Error:', error);
@@ -32,15 +28,14 @@ function handleResponse(error, response) {
   var controlCommsClient = new lights.ControlComms("0.0.0.0:40000", grpc.credentials.createInsecure());
   controlStream = controlCommsClient.ControlLights();
   // Example: Send a message to the server
-//  var clientMessage = {name: streetLightId, messageZone: `Zone ${streetLightZone}`,streetLightOn: streetLightOn};
   //had to add messageCommand as the server was crashing out after recent changes
   var clientMessage = {name: streetLightId, messageZone: `Zone ${streetLightZone}`, messageCommand: 'no command yet'}; 
   
   controlStream.write(clientMessage);
-
+  //adding a try and catch for additioanl error logging.
   controlStream.on("data", (serverMessage) => {
+    try {
       // incoming messages from the server
-      //console.log(`Received message from server: ${serverMessage.name} - ${serverMessage.messageZone} - ${serverMessage.streetLightOn} - ${serverMessage.messageCommand}`);
       console.log(`Received message from server: ${serverMessage.name} - ${serverMessage.messageZone} - ${serverMessage.messageCommand || 'No Message Command'}`);
     
 //updated teh includes to have string Zone, to prevent the issues seen with it reading the number twice if it was also in the telemetry. 
@@ -74,6 +69,9 @@ function handleResponse(error, response) {
     console.log('what is street light now before client AT OFF IF here '+streetLightOn);
     controlStream.write(clientMessage);
   }
+}catch (error){
+  console.error('error at server message', error);
+}
     controlStream.on("end", () => {
       // Server has ended the streaming
       console.log("Server has ended the streaming.");
